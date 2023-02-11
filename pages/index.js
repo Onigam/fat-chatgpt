@@ -1,4 +1,5 @@
 import styles from "@/styles/Home.module.css";
+import { Analytics } from '@vercel/analytics/react';
 import Head from "next/head";
 import { useEffect, useState } from "react";
 import sequence from "./api/sequence";
@@ -178,6 +179,7 @@ export default function Home() {
         <title>FatGPT</title>
         <link rel="icon" href="/ai.png" />
       </Head>
+      <Analytics />
 
       <main className={styles.main}>
         <h3>Fat GPT</h3>
@@ -212,7 +214,7 @@ export default function Home() {
             type="text"
             name="text"
             rows="10"
-            placeholder={`Enter your text here, there is no size limitation, the content will be split into ${chunkSize} characters chunks. Each chunk will be processed separately by openAI.`}
+            placeholder={`Enter your text here, there is no size limitation, the content will be split into ${chunkSize} characters chunks. Each chunk will be processed separatly by openAI.`}
             value={textInput}
             onChange={(e) => setTextInput(e.target.value)}
           />

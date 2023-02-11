@@ -1,3 +1,9 @@
+/**
+ * This function generates the prompt for the OpenAI API.
+ * @param {*} text 
+ * @param {*} request 
+ * @returns 
+ */
 function generatePrompt(text, request) {
     return `${request}:
       
@@ -7,6 +13,13 @@ function generatePrompt(text, request) {
       `;
   }
 
+/**
+ * This function calls the OpenAI API and returns the generated text.
+ * @param {*} text 
+ * @param {*} request 
+ * @param {*} openai 
+ * @returns 
+ */
 export default async function callGPT(text, request, openai) {
   const completion = await openai.createCompletion({
     model: "text-davinci-003",

@@ -13,6 +13,13 @@ export default function Home() {
   // Get the openai api key from the local storage
   const [openaiAPIKey, setOpenAIAPIKey] = useState("");
 
+  /**
+   * This function splits the text into chunks of the given chunk size.
+   * It returns an array of chunks.
+   * @param {*} str 
+   * @param {*} chunkSize 
+   * @returns 
+   */
   function splitString(str, chunkSize) {
     let chunks = [];
     for (let i = 0; i < str.length; i += chunkSize) {
@@ -21,6 +28,12 @@ export default function Home() {
     return chunks;
   }
 
+  // This useEffect will run once when the component mounts
+  // It checks if the window and local storage exist, and if so, it
+  // checks if there is an API key stored in local storage. If so, it
+  // sets the openAIAPIKey state to the value of the key. It also checks
+  // if there is an API request stored in local storage, and if so, it
+  // sets the requestInput state to the value of the request.
   useEffect(() => {
     if (window && window.localStorage) {
       const key = window.localStorage.getItem("openaiAPIKey");
@@ -35,7 +48,17 @@ export default function Home() {
     }
   }, []);
 
-  async function processChunk(chunk) {
+  /**
+   * This function calls the API server, which then calls the OpenAI API.
+   * The OpenAI API uses the text sent as input and the request to generate a new text.
+   * The API server then returns the generated text to this function.
+   * The function return the generated text.
+   * @param {*} chunk 
+   * @param {*} openaiAPIKey 
+   * @param {*} requestInput 
+   * @returns 
+   */
+  async function processChunk(chunk, openaiAPIKey, requestInput) {
     const response = await fetch("/api/generate", {
       method: "POST",
       headers: {
@@ -58,6 +81,45 @@ export default function Home() {
     return data.result;
   }
 
+
+  /**
+   * This function is called when the user clicks the submit button.
+   * It calls the processChunk function for each chunk of the text.
+   * It then sets the result state to the generated text.
+   * @param {*} chunk 
+   * @param {*} openaiAPIKey 
+   * @param {*} requestInput 
+   * @returns 
+   */
+  async function processChunk(chunk, openaiAPIKey, requestInput) {
+    const response = await fetch("/api/generate", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        request: requestInput,
+        text: chunk,
+        openaiAPIKey,
+      }),
+    });
+
+    const data = await response.json();
+    if (response.status !== 200) {
+      throw (
+        data.error || new Error(`Request failed with status ${response.status}`)
+      );
+    }
+
+    return data.result;
+  }
+
+  /**
+   * This function is called when the user clicks the submit button.
+   * It calls the processChunk function in sequence for each chunk of the text.
+   * It then sets the result state to the generated text.
+   * @param {*} event 
+   */
   async function onSubmit(event) {
     event.preventDefault();
     try {
@@ -68,7 +130,6 @@ export default function Home() {
       let chunks = splitString(textInput, 2000);
 
       const res = await sequence(chunks, (chunk, index) => {
-        // Set the progress of the progress bar in percent
         setProgress(Math.round(((index - 1) / chunks.length) * 100));
         console.log(`Processing chunk: ${index} of ${chunks.length}`);
         return processChunk(chunk);
@@ -84,6 +145,12 @@ export default function Home() {
     }
   }
 
+  /**
+   * This function is called when the user enters a new API key.
+   * It sets the openAIAPIKey state to the new key.
+   * It also stores the key in the local storage.
+   * @param {*} key 
+   */
   const setAPIKeyAndPersist = (key) => {
     setOpenAIAPIKey(key);
     if (window && window.localStorage) {
@@ -91,6 +158,12 @@ export default function Home() {
     }
   };
 
+  /**
+   * This function is called when the user enters a new request.
+   * It sets the requestInput state to the new request.
+   * It also stores the request in the local storage.
+   * @param {*} request 
+   */
   const setRequestAndPersist = (request) => {
     setRequestInput(request);
     if (window && window.localStorage) {

@@ -9,6 +9,7 @@ export default function Home() {
   const [result, setResult] = useState([]);
   const [processing, setProcessing] = useState(false);
   const [progress, setProgress] = useState(0);
+  const chunkSize = 2000;
 
   // Get the openai api key from the local storage
   const [openaiAPIKey, setOpenAIAPIKey] = useState("");
@@ -127,7 +128,7 @@ export default function Home() {
 
       setResult([]);
 
-      let chunks = splitString(textInput, 2000);
+      let chunks = splitString(textInput, chunkSize);
 
       const res = await sequence(chunks, (chunk, index) => {
         setProgress(Math.round(((index - 1) / chunks.length) * 100));
@@ -215,6 +216,7 @@ export default function Home() {
             value={textInput}
             onChange={(e) => setTextInput(e.target.value)}
           />
+          {!!textInput?.length && (<div className={styles.size}>{`${textInput.length} characters - ${parseInt(textInput.length / chunkSize) + 1} parts to process`}</div>)}
           {!processing && <input type="submit" value="Process your request" />}
           {processing && (
             <input

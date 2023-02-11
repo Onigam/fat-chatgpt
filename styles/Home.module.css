@@ -93,3 +93,13 @@
 .github {
   margin: 16px 0;
 }
+
+.size {
+  font-size: 12px;
+  line-height: 16px;
+  color: #8e8ea0;
+  display: flex;
+  width: 100%;
+  justify-content: end;
+  margin-bottom: 20px;
+}

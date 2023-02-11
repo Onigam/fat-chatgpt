@@ -107,8 +107,8 @@ export default function Home() {
 
       <main className={styles.main}>
         <h3>Fat GPT</h3>
-        <a href="https://github.com/Onigam/fat-chatgpt">
-          github.com/Onigam/fat-chatgpt
+        <a className={styles.github} href="https://github.com/Onigam/fat-chatgpt">
+          Source code on Github
         </a>
 
         <form onSubmit={onSubmit}>

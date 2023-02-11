@@ -1,3 +1,9 @@
+/**
+ * This runs a sequence of asynchronous functions, one after the other.
+ * @param {*} items 
+ * @param {*} consumer 
+ * @returns 
+ */
 export default function sequence(items, consumer) {
     const results = [];
     const iterator = items.values();

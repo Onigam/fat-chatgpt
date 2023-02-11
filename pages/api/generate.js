@@ -2,6 +2,12 @@ import { Configuration, OpenAIApi } from "openai";
 import callGPT from "./openai";
 import sequence from "./sequence";
 
+/**
+ * This function splits the text into chunks of the given size.
+ * @param {*} str 
+ * @param {*} chunkSize 
+ * @returns 
+ */
 function splitString(str, chunkSize) {
   let chunks = [];
   for (let i = 0; i < str.length; i += chunkSize) {
@@ -11,14 +17,20 @@ function splitString(str, chunkSize) {
 }
 
 // eslint-disable-next-line import/no-anonymous-default-export
-export default async function (req, res) {
-
+/**
+ * This controller function calls the OpenAI API and returns the generated text.
+ * It expects the request body to contain the OpenAI API Key, the request, and the text.
+ * @param {*} req
+ * @param {*} res
+ * @returns
+ */
+export default async function generateController(req, res) {
   const openaiAPIKey = req.body.openaiAPIKey || "";
   if (openaiAPIKey.trim().length === 0) {
     res.status(400).json({
       error: {
         message: "Please enter your OpenAI API Key",
-      }
+      },
     });
     return;
   }
@@ -28,7 +40,7 @@ export default async function (req, res) {
     res.status(400).json({
       error: {
         message: "Please enter a request",
-      }
+      },
     });
     return;
   }
@@ -38,7 +50,7 @@ export default async function (req, res) {
     res.status(400).json({
       error: {
         message: "Please enter a text",
-      }
+      },
     });
     return;
   }

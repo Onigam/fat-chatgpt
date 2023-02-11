@@ -132,7 +132,7 @@ export default function Home() {
       const res = await sequence(chunks, (chunk, index) => {
         setProgress(Math.round(((index - 1) / chunks.length) * 100));
         console.log(`Processing chunk: ${index} of ${chunks.length}`);
-        return processChunk(chunk);
+        return processChunk(chunk, openaiAPIKey, requestInput);
       });
 
       setResult(res);

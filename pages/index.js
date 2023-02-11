@@ -212,11 +212,11 @@ export default function Home() {
             type="text"
             name="text"
             rows="10"
-            placeholder="Enter your text"
+            placeholder={`Enter your text here, there is no size limitation, the content will be split into ${chunkSize} characters chunks. Each chunk will be processed separately by openAI.`}
             value={textInput}
             onChange={(e) => setTextInput(e.target.value)}
           />
-          {!!textInput?.length && (<div className={styles.size}>{`${textInput.length} characters - ${parseInt(textInput.length / chunkSize) + 1} parts to process`}</div>)}
+          {!!textInput?.length && (<div className={styles.size}>{`${textInput.length} characters - ${parseInt(textInput.length / chunkSize) + 1} chunks to process`}</div>)}
           {!processing && <input type="submit" value="Process your request" />}
           {processing && (
             <input

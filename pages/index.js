@@ -65,7 +65,7 @@ export default function Home() {
 
       setResult([]);
 
-      let chunks = splitString(textInput, 3000);
+      let chunks = splitString(textInput, 2000);
 
       const res = await sequence(chunks, (chunk, index) => {
         // Set the progress of the progress bar in percent
@@ -102,7 +102,7 @@ export default function Home() {
     <div>
       <Head>
         <title>FatGPT</title>
-        <link rel="icon" href="/dog.png" />
+        <link rel="icon" href="/ai.png" />
       </Head>
 
       <main className={styles.main}>

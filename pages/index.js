@@ -1,7 +1,7 @@
-import styles from '@/styles/Home.module.css';
-import Head from 'next/head';
+import styles from "@/styles/Home.module.css";
+import Head from "next/head";
 import { useEffect, useState } from "react";
-import sequence from './api/sequence';
+import sequence from "./api/sequence";
 
 export default function Home() {
   const [requestInput, setRequestInput] = useState("Summarize the text below");
@@ -9,7 +9,6 @@ export default function Home() {
   const [result, setResult] = useState([]);
   const [processing, setProcessing] = useState(false);
   const [progress, setProgress] = useState(0);
-
 
   // Get the openai api key from the local storage
   const [openaiAPIKey, setOpenAIAPIKey] = useState("");
@@ -42,17 +41,19 @@ export default function Home() {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ request: requestInput, text: chunk, openaiAPIKey }),
+      body: JSON.stringify({
+        request: requestInput,
+        text: chunk,
+        openaiAPIKey,
+      }),
     });
 
     const data = await response.json();
     if (response.status !== 200) {
-      throw data.error || new Error(`Request failed with status ${response.status}`);
+      throw (
+        data.error || new Error(`Request failed with status ${response.status}`)
+      );
     }
-
-    //const newRes = [...result,...data.result];
-
-    //setResult(newRes);
 
     return data.result;
   }
@@ -68,14 +69,13 @@ export default function Home() {
 
       const res = await sequence(chunks, (chunk, index) => {
         // Set the progress of the progress bar in percent
-        setProgress(Math.round(((index-1) / chunks.length) * 100));
+        setProgress(Math.round(((index - 1) / chunks.length) * 100));
         console.log(`Processing chunk: ${index} of ${chunks.length}`);
         return processChunk(chunk);
       });
 
       setResult(res);
-
-    } catch(error) {
+    } catch (error) {
       // Consider implementing your own error handling logic here
       console.error(error);
       alert(error.message);
@@ -89,14 +89,14 @@ export default function Home() {
     if (window && window.localStorage) {
       window.localStorage.setItem("openaiAPIKey", key);
     }
-  }
+  };
 
   const setRequestAndPersist = (request) => {
     setRequestInput(request);
     if (window && window.localStorage) {
       window.localStorage.setItem("request", request);
     }
-  }
+  };
 
   return (
     <div>
@@ -113,7 +113,9 @@ export default function Home() {
 
         <form onSubmit={onSubmit}>
           <label>Enter your OpenAI API Key</label>
-          <a href="https://beta.openai.com/account/api-keys">Get your API Key here</a>
+          <a href="https://beta.openai.com/account/api-keys">
+            Get your API Key here
+          </a>
           <input
             type="text"
             name="openaiAPIKey"
@@ -141,14 +143,24 @@ export default function Home() {
             onChange={(e) => setTextInput(e.target.value)}
           />
           {!processing && <input type="submit" value="Process your request" />}
-          {processing && <input type="submit" value="Processing wait a few seconds..." disabled />}
+          {processing && (
+            <input
+              type="submit"
+              value="Processing wait a few seconds..."
+              disabled
+            />
+          )}
           {processing && <progress value={progress} max="100" />}
         </form>
-        {result && (<div className={styles.resultContainer}>
-          {result.map((item, index) => (
-            <div className={styles.resultPart} key={index}>{item}</div>
-          ))}
-        </div>)}
+        {result && (
+          <div className={styles.resultContainer}>
+            {result.map((item, index) => (
+              <div className={styles.resultPart} key={index}>
+                {item}
+              </div>
+            ))}
+          </div>
+        )}
       </main>
     </div>
   );

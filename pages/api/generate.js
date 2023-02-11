@@ -1,6 +1,6 @@
+import { Configuration, OpenAIApi } from "openai";
 import callGPT from "./openai";
 import sequence from "./sequence";
-
 
 function splitString(str, chunkSize) {
   let chunks = [];
@@ -12,16 +12,18 @@ function splitString(str, chunkSize) {
 
 // eslint-disable-next-line import/no-anonymous-default-export
 export default async function (req, res) {
-  /*if (!configuration.apiKey) {
-    res.status(500).json({
+
+  const openaiAPIKey = req.body.openaiAPIKey || "";
+  if (text.trim().length === 0) {
+    res.status(400).json({
       error: {
-        message: "OpenAI API key not configured, please follow instructions in README.md",
+        message: "Please enter your OpenAI API Key",
       }
     });
     return;
-  }*/
+  }
 
-  const request = req.body.request || '';
+  const request = req.body.request || "";
   if (request.trim().length === 0) {
     res.status(400).json({
       error: {
@@ -31,7 +33,7 @@ export default async function (req, res) {
     return;
   }
 
-  const text = req.body.text || '';
+  const text = req.body.text || "";
   if (text.trim().length === 0) {
     res.status(400).json({
       error: {
@@ -41,17 +43,25 @@ export default async function (req, res) {
     return;
   }
 
+
+
+
   try {
+    const configuration = new Configuration({
+      apiKey: openaiAPIKey,
+    });
+    const openai = new OpenAIApi(configuration);
+
     let chunks = splitString(text, 3000);
 
     sequence(chunks, (chunk, index) => {
       console.log(`Progressing chunk: ${index} of ${chunks.length}`);
-      return callGPT(chunk, request);
+      return callGPT(chunk, request, openai);
     }).then((result) => {
       console.log("Done!");
       res.status(200).json({ result });
     });
-  } catch(error) {
+  } catch (error) {
     // Consider adjusting the error handling logic for your use case
     if (error.response) {
       console.error(error.response.status, error.response.data);
@@ -60,10 +70,9 @@ export default async function (req, res) {
       console.error(`Error with OpenAI API request: ${error.message}`);
       res.status(500).json({
         error: {
-          message: 'An error occurred during your request.',
-        }
+          message: "An error occurred during your request.",
+        },
       });
     }
   }
 }
-

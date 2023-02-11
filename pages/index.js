@@ -1,12 +1,32 @@
 import styles from '@/styles/Home.module.css';
 import Head from 'next/head';
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function Home() {
   const [requestInput, setRequestInput] = useState("Summarize the text below");
   const [textInput, setTextInput] = useState("");
   const [result, setResult] = useState();
   const [processing, setProcessing] = useState(false);
+
+
+  // Get the openai api key from the local storage
+  const [openaiAPIKey, setOpenAIAPIKey] = useState("");
+
+
+  useEffect(() => {
+    if (window && window.localStorage) {
+      const key = window.localStorage.getItem("openaiAPIKey");
+      if (key) {
+        setOpenAIAPIKey(key);
+      }
+
+      const request = window.localStorage.getItem("request");
+      if (request) {
+        setRequestInput(request);
+      }
+    }
+  }, []);
+
 
   async function onSubmit(event) {
     event.preventDefault();
@@ -17,7 +37,7 @@ export default function Home() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ request: requestInput, text: textInput }),
+        body: JSON.stringify({ request: requestInput, text: textInput, openaiAPIKey }),
       });
 
       const data = await response.json();
@@ -35,6 +55,20 @@ export default function Home() {
     }
   }
 
+  const setAPIKeyAndPersist = (key) => {
+    setOpenAIAPIKey(key);
+    if (window && window.localStorage) {
+      window.localStorage.setItem("openaiAPIKey", key);
+    }
+  }
+
+  const setRequestAndPersist = (request) => {
+    setRequestInput(request);
+    if (window && window.localStorage) {
+      window.localStorage.setItem("request", request);
+    }
+  }
+
   return (
     <div>
       <Head>
@@ -45,6 +79,16 @@ export default function Home() {
       <main className={styles.main}>
         <h3>Fat GPT</h3>
         <form onSubmit={onSubmit}>
+          <label for="openaiAPIKey">Enter your OpenAI API Key</label>
+          <a href="https://beta.openai.com/account/api-keys">Get your API Key here</a>
+          <input
+            type="text"
+            name="openaiAPIKey"
+            placeholder="Enter your OpenAI API Key"
+            value={openaiAPIKey}
+            onChange={(e) => setAPIKeyAndPersist(e.target.value)}
+          />
+
           <label for="request">Enter your request</label>
           <textarea
             type="text"
@@ -52,7 +96,7 @@ export default function Home() {
             rows="2"
             placeholder="Enter your request"
             value={requestInput}
-            onChange={(e) => setRequestInput(e.target.value)}
+            onChange={(e) => setRequestAndPersist(e.target.value)}
           />
           <label for="request">The text you want to process</label>
           <textarea

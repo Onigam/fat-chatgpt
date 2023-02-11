@@ -61,7 +61,7 @@ export default async function generateController(req, res) {
     });
     const openai = new OpenAIApi(configuration);
 
-    let chunks = splitString(text, 3000);
+    let chunks = splitString(text, 2000);
 
     sequence(chunks, (chunk, index) => {
       console.log(`Processing chunk: ${index} of ${chunks.length}`);

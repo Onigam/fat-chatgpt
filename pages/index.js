@@ -78,8 +78,12 @@ export default function Home() {
 
       <main className={styles.main}>
         <h3>Fat GPT</h3>
+        <a href="https://github.com/Onigam/fat-chatgpt">
+          github.com/Onigam/fat-chatgpt
+        </a>
+
         <form onSubmit={onSubmit}>
-          <label for="openaiAPIKey">Enter your OpenAI API Key</label>
+          <label>Enter your OpenAI API Key</label>
           <a href="https://beta.openai.com/account/api-keys">Get your API Key here</a>
           <input
             type="text"
@@ -89,7 +93,7 @@ export default function Home() {
             onChange={(e) => setAPIKeyAndPersist(e.target.value)}
           />
 
-          <label for="request">Enter your request</label>
+          <label>Enter your request</label>
           <textarea
             type="text"
             name="request"
@@ -98,7 +102,7 @@ export default function Home() {
             value={requestInput}
             onChange={(e) => setRequestAndPersist(e.target.value)}
           />
-          <label for="request">The text you want to process</label>
+          <label>The text you want to process</label>
           <textarea
             type="text"
             name="text"

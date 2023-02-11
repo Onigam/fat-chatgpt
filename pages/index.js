@@ -1,17 +1,26 @@
 import styles from '@/styles/Home.module.css';
 import Head from 'next/head';
 import { useEffect, useState } from "react";
+import sequence from './api/sequence';
 
 export default function Home() {
   const [requestInput, setRequestInput] = useState("Summarize the text below");
   const [textInput, setTextInput] = useState("");
-  const [result, setResult] = useState();
+  const [result, setResult] = useState([]);
   const [processing, setProcessing] = useState(false);
+  const [progress, setProgress] = useState(0);
 
 
   // Get the openai api key from the local storage
   const [openaiAPIKey, setOpenAIAPIKey] = useState("");
 
+  function splitString(str, chunkSize) {
+    let chunks = [];
+    for (let i = 0; i < str.length; i += chunkSize) {
+      chunks.push(str.slice(i, i + chunkSize));
+    }
+    return chunks;
+  }
 
   useEffect(() => {
     if (window && window.localStorage) {
@@ -27,25 +36,45 @@ export default function Home() {
     }
   }, []);
 
+  async function processChunk(chunk) {
+    const response = await fetch("/api/generate", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ request: requestInput, text: chunk, openaiAPIKey }),
+    });
+
+    const data = await response.json();
+    if (response.status !== 200) {
+      throw data.error || new Error(`Request failed with status ${response.status}`);
+    }
+
+    //const newRes = [...result,...data.result];
+
+    //setResult(newRes);
+
+    return data.result;
+  }
 
   async function onSubmit(event) {
     event.preventDefault();
     try {
       setProcessing(true);
-      const response = await fetch("/api/generate", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ request: requestInput, text: textInput, openaiAPIKey }),
+
+      setResult([]);
+
+      let chunks = splitString(textInput, 3000);
+
+      const res = await sequence(chunks, (chunk, index) => {
+        // Set the progress of the progress bar in percent
+        setProgress(Math.round(((index-1) / chunks.length) * 100));
+        console.log(`Processing chunk: ${index} of ${chunks.length}`);
+        return processChunk(chunk);
       });
 
-      const data = await response.json();
-      if (response.status !== 200) {
-        throw data.error || new Error(`Request failed with status ${response.status}`);
-      }
+      setResult(res);
 
-      setResult(data.result);
     } catch(error) {
       // Consider implementing your own error handling logic here
       console.error(error);
@@ -113,6 +142,7 @@ export default function Home() {
           />
           {!processing && <input type="submit" value="Process your request" />}
           {processing && <input type="submit" value="Processing wait a few seconds..." disabled />}
+          {processing && <progress value={progress} max="100" />}
         </form>
         {result && (<div className={styles.resultContainer}>
           {result.map((item, index) => (

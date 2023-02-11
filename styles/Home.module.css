@@ -84,3 +84,8 @@
   padding: 12px 16px;
   margin-top: 40px;
 }
+
+.main progress {
+  margin-top: 40px;
+  width: 100%;
+}

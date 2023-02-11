@@ -43,9 +43,6 @@ export default async function (req, res) {
     return;
   }
 
-
-
-
   try {
     const configuration = new Configuration({
       apiKey: openaiAPIKey,
@@ -55,7 +52,7 @@ export default async function (req, res) {
     let chunks = splitString(text, 3000);
 
     sequence(chunks, (chunk, index) => {
-      console.log(`Progressing chunk: ${index} of ${chunks.length}`);
+      console.log(`Processing chunk: ${index} of ${chunks.length}`);
       return callGPT(chunk, request, openai);
     }).then((result) => {
       console.log("Done!");

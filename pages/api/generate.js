@@ -14,7 +14,7 @@ function splitString(str, chunkSize) {
 export default async function (req, res) {
 
   const openaiAPIKey = req.body.openaiAPIKey || "";
-  if (text.trim().length === 0) {
+  if (openaiAPIKey.trim().length === 0) {
     res.status(400).json({
       error: {
         message: "Please enter your OpenAI API Key",

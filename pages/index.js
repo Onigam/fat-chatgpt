@@ -131,13 +131,16 @@ export default function Home() {
 
       let chunks = splitString(textInput, chunkSize);
 
-      const res = await sequence(chunks, (chunk, index) => {
+      await sequence(chunks, (chunk, index) => {
         setProgress(Math.round(((index - 1) / chunks.length) * 100));
         console.log(`Processing chunk: ${index} of ${chunks.length}`);
-        return processChunk(chunk, openaiAPIKey, requestInput);
-      });
 
-      setResult(res);
+        return processChunk(chunk, openaiAPIKey, requestInput).then((res) => {
+          setResult((prevResult) => [...prevResult, ...res]);
+        }).finally(() => {
+          return result;
+        });
+      });
     } catch (error) {
       // Consider implementing your own error handling logic here
       console.error(error);

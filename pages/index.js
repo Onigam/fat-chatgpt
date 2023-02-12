@@ -1,3 +1,5 @@
+import { CHUNK_SIZE } from "@/common/chunk.constant";
+import { splitString } from "@/common/chunk.helper";
 import styles from "@/styles/Home.module.css";
 import { Analytics } from '@vercel/analytics/react';
 import Head from "next/head";
@@ -11,25 +13,10 @@ export default function Home() {
   const [result, setResult] = useState([]);
   const [processing, setProcessing] = useState(false);
   const [progress, setProgress] = useState(0);
-  const chunkSize = 2000;
+  const [chunks, setChunks] = useState("");
 
   // Get the openai api key from the local storage
   const [openaiAPIKey, setOpenAIAPIKey] = useState("");
-
-  /**
-   * This function splits the text into chunks of the given chunk size.
-   * It returns an array of chunks.
-   * @param {*} str 
-   * @param {*} chunkSize 
-   * @returns 
-   */
-  function splitString(str, chunkSize) {
-    let chunks = [];
-    for (let i = 0; i < str.length; i += chunkSize) {
-      chunks.push(str.slice(i, i + chunkSize));
-    }
-    return chunks;
-  }
 
   // This useEffect will run once when the component mounts
   // It checks if the window and local storage exist, and if so, it
@@ -130,8 +117,6 @@ export default function Home() {
 
       setResult([]);
 
-      let chunks = splitString(textInput, chunkSize);
-
       await sequence(chunks, (chunk, index) => {
         setProgress(Math.round(((index - 1) / chunks.length) * 100));
         console.log(`Processing chunk: ${index} of ${chunks.length}`);
@@ -175,6 +160,12 @@ export default function Home() {
     if (window && window.localStorage) {
       window.localStorage.setItem("request", request);
     }
+  };
+
+  const setTextAndChunks = (text) => {
+    setTextInput(text);
+    let chunks = splitString(text, CHUNK_SIZE);
+    setChunks(chunks);
   };
 
   return (
@@ -221,11 +212,11 @@ export default function Home() {
             type="text"
             name="text"
             rows="10"
-            placeholder={`Enter your text here, there is no size limitation, the content will be split into ${chunkSize} characters chunks. Each chunk will be processed separatly by openAI.`}
+            placeholder={`Enter your text here, there is no size limitation, the content will be split into ${CHUNK_SIZE} characters chunks. Each chunk will be processed separatly by openAI.`}
             value={textInput}
-            onChange={(e) => setTextInput(e.target.value)}
+            onChange={(e) => setTextAndChunks(e.target.value)}
           />
-          {!!textInput?.length && (<div className={styles.size}>{`${textInput.length} characters - ${parseInt(textInput.length / chunkSize) + 1} chunks to process`}</div>)}
+          {!!textInput?.length && (<div className={styles.size}>{`${textInput.length} characters - ${parseInt(textInput.length / CHUNK_SIZE) + 1} chunks to process`}</div>)}
           {!processing && <input type="submit" value="Process your request" />}
           {processing && (
             <input
@@ -238,9 +229,13 @@ export default function Home() {
         </form>
         {result && (
           <div className={styles.resultContainer}>
-            {result.map((item, index) => (
-              <Typewriter key={`result-${index}`} text={item} />
-            ))}
+            {result.map((item, index) => {
+              
+              return <>
+                <Typewriter key={`result-${index}`} text={item} />
+                {chunks.length > 1 && (<div className={styles.partLabel}>Part {index + 1}</div>)}
+              </>
+            })}
           </div>
         )}
       </main>

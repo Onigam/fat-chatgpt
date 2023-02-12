@@ -1,20 +1,7 @@
+import { splitString } from "@/common/chunk.helper";
 import { Configuration, OpenAIApi } from "openai";
 import callGPT from "./openai";
 import sequence from "./sequence";
-
-/**
- * This function splits the text into chunks of the given size.
- * @param {*} str 
- * @param {*} chunkSize 
- * @returns 
- */
-function splitString(str, chunkSize) {
-  let chunks = [];
-  for (let i = 0; i < str.length; i += chunkSize) {
-    chunks.push(str.slice(i, i + chunkSize));
-  }
-  return chunks;
-}
 
 // eslint-disable-next-line import/no-anonymous-default-export
 /**
@@ -61,7 +48,7 @@ export default async function generateController(req, res) {
     });
     const openai = new OpenAIApi(configuration);
 
-    let chunks = splitString(text, 2000);
+    let chunks = splitString(text);
 
     sequence(chunks, (chunk, index) => {
       console.log(`Processing chunk: ${index} of ${chunks.length}`);

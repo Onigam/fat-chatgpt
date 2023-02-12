@@ -109,3 +109,10 @@
   max-width: var(--width);
   font-size: 12px;
 }
+
+.partLabel {
+  font-size: 12px;
+  line-height: 16px;
+  color: #8e8ea0;
+  margin-bottom: 8px;
+}

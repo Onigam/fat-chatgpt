@@ -21,7 +21,7 @@ sequenceDiagram
     participant Server
     participant OpenAI
     User->>Browser: Enter API Key, request and text
-    Browser->>Server: POST 1 part to /api
+    Browser->>Server: POST 1st part to /api
     Server->>OpenAI: POST /v1/engines/davinci/completions
     OpenAI->>Server: Response
     Server->>Browser: Response

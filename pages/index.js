@@ -3,6 +3,7 @@ import { Analytics } from '@vercel/analytics/react';
 import Head from "next/head";
 import { useEffect, useState } from "react";
 import sequence from "./api/sequence";
+import Typewriter from "./TypeWriter";
 
 export default function Home() {
   const [requestInput, setRequestInput] = useState("Summarize the text below");
@@ -238,9 +239,7 @@ export default function Home() {
         {result && (
           <div className={styles.resultContainer}>
             {result.map((item, index) => (
-              <div className={styles.resultPart} key={index}>
-                {item}
-              </div>
+              <Typewriter key={`result-${index}`} text={item} />
             ))}
           </div>
         )}

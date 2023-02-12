@@ -2,8 +2,8 @@ import styles from "@/styles/Home.module.css";
 import { Analytics } from '@vercel/analytics/react';
 import Head from "next/head";
 import { useEffect, useState } from "react";
+import Typewriter from "../components/TypeWriter";
 import sequence from "./api/sequence";
-import Typewriter from "./TypeWriter";
 
 export default function Home() {
   const [requestInput, setRequestInput] = useState("Summarize the text below");

@@ -23,7 +23,6 @@
   margin-bottom: 60px;
   flex-direction: column;
   align-items: center;
-  padding-top: 60px;
   padding-bottom: 60px;
 }
 
@@ -44,7 +43,7 @@
   line-height: 40px;
   font-weight: bold;
   color: #202123;
-  margin: 16px 0 40px;
+  margin: 16px 0;
 }
 .main form {
   display: flex;
@@ -75,7 +74,7 @@
 }
 .main .resultContainer {
   width: var(--width);
-
+  transition: all 0.3s ease;
 }
 
 .main .resultPart {
@@ -91,7 +90,7 @@
 }
 
 .github {
-  margin: 16px 0;
+  margin-bottom: 16px;
 }
 
 .size {
@@ -101,4 +100,12 @@
   width: 100%;
   text-align: right;
   margin-bottom: 20px;
+}
+
+.links {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  max-width: var(--width);
+  font-size: 12px;
 }

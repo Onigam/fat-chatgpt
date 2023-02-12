@@ -186,15 +186,18 @@ export default function Home() {
 
       <main className={styles.main}>
         <h3>Fat GPT</h3>
-        <a className={styles.github} href="https://github.com/Onigam/fat-chatgpt">
-          Source code on Github
-        </a>
 
-        <form onSubmit={onSubmit}>
-          <label>Enter your OpenAI API Key</label>
+        <div className={styles.links}>
           <a href="https://beta.openai.com/account/api-keys">
             Get your API Key here
           </a>
+            <a className={styles.github} href="https://github.com/Onigam/fat-chatgpt">
+            Source code on Github
+          </a>
+        </div>
+
+        <form onSubmit={onSubmit}>
+          <label>Enter your OpenAI API Key</label>
           <input
             type="text"
             name="openaiAPIKey"

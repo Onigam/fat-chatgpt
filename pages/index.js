@@ -104,6 +104,10 @@ export default function Home() {
     return data.result;
   }
 
+  function scrollToBottom() {
+    window.scrollTo(0, document.body.scrollHeight);
+  }
+
   /**
    * This function is called when the user clicks the submit button.
    * It calls the processChunk function in sequence for each chunk of the text.
@@ -113,11 +117,13 @@ export default function Home() {
   async function onSubmit(event) {
     event.preventDefault();
     try {
+
       setProcessing(true);
 
       setResult([]);
 
       await sequence(chunks, (chunk, index) => {
+        scrollToBottom();
         setProgress(Math.round(((index - 1) / chunks.length) * 100));
         console.log(`Processing chunk: ${index} of ${chunks.length}`);
 

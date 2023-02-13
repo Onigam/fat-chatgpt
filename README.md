@@ -10,7 +10,9 @@ Your API key and request is^stored in the browser local storage so there is no n
 
 The API key is not stored in the server.
 
-The application is built with Next.js.
+The application is built with Next.js and hosted by Vercel.
+
+
 
 Here the sequence diagram of the application:
 

@@ -55,6 +55,7 @@ export default async function generateController(req, res) {
       return callGPT(chunk, request, openai);
     }).then((result) => {
       console.log("Done!");
+      console.log(JSON.stringify(result));
       res.status(200).json({ result });
     });
   } catch (error) {
@@ -72,3 +73,10 @@ export default async function generateController(req, res) {
     }
   }
 }
+
+export const config = {
+  api: {
+    externalResolver: true,
+    serverTimeout: 30000,
+  }
+};

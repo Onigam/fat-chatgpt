@@ -1,11 +1,13 @@
 import { CHUNK_SIZE } from "@/common/chunk.constant";
 import { splitString } from "@/common/chunk.helper";
+import callGPT from "@/common/openai";
 import styles from "@/styles/Home.module.css";
 import { Analytics } from '@vercel/analytics/react';
 import Head from "next/head";
+import { Configuration, OpenAIApi } from "openai";
 import { useEffect, useState } from "react";
+import sequence from "../common/sequence";
 import Typewriter from "../components/TypeWriter";
-import sequence from "./api/sequence";
 
 export default function Home() {
   const [requestInput, setRequestInput] = useState("Summarize the text below");
@@ -38,6 +40,7 @@ export default function Home() {
     }
   }, []);
 
+
   /**
    * This function calls the API server, which then calls the OpenAI API.
    * The OpenAI API uses the text sent as input and the request to generate a new text.
@@ -49,59 +52,12 @@ export default function Home() {
    * @returns 
    */
   async function processChunk(chunk, openaiAPIKey, requestInput) {
-    const response = await fetch("/api/generate", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        request: requestInput,
-        text: chunk,
-        openaiAPIKey,
-      }),
+
+    const configuration = new Configuration({
+      apiKey: openaiAPIKey,
     });
-
-    const data = await response.json();
-    if (response.status !== 200) {
-      throw (
-        data.error || new Error(`Request failed with status ${response.status}`)
-      );
-    }
-
-    return data.result;
-  }
-
-
-  /**
-   * This function is called when the user clicks the submit button.
-   * It calls the processChunk function for each chunk of the text.
-   * It then sets the result state to the generated text.
-   * @param {*} chunk 
-   * @param {*} openaiAPIKey 
-   * @param {*} requestInput 
-   * @returns 
-   */
-  async function processChunk(chunk, openaiAPIKey, requestInput) {
-    const response = await fetch("/api/generate", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        request: requestInput,
-        text: chunk,
-        openaiAPIKey,
-      }),
-    });
-
-    const data = await response.json();
-    if (response.status !== 200) {
-      throw (
-        data.error || new Error(`Request failed with status ${response.status}`)
-      );
-    }
-
-    return data.result;
+    const openai = new OpenAIApi(configuration);
+    return callGPT(chunk, requestInput, openai);
   }
 
   function scrollToBottom() {
@@ -128,7 +84,7 @@ export default function Home() {
         console.log(`Processing chunk: ${index} of ${chunks.length}`);
 
         return processChunk(chunk, openaiAPIKey, requestInput).then((res) => {
-          setResult((prevResult) => [...prevResult, ...res]);
+          setResult((prevResult) => [...prevResult, res]);
         }).finally(() => {
           return result;
         });

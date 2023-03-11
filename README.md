@@ -6,9 +6,7 @@ An openai API key is required to use this application. You can get one here: htt
 
 The application is deployed on Vercel: https://fat-chatgpt.vercel.app/
 
-Your API key and request is^stored in the browser local storage so there is no need to retype it if you go back on the page.
-
-The API key is not stored in the server.
+Your API key and request is stored in the browser local storage so there is no need to retype it if you go back on the page.
 
 The application is built with Next.js and hosted by Vercel.
 
@@ -20,23 +18,16 @@ Here the sequence diagram of the application:
 sequenceDiagram
     participant User
     participant Browser
-    participant Server
     participant OpenAI
     User->>Browser: Enter API Key, request and text
-    Browser->>Server: POST 1st part to /api
-    Server->>OpenAI: POST /v1/engines/davinci/completions
-    OpenAI->>Server: Response
-    Server->>Browser: Response
+    Browser->>OpenAI: POST 1st part to /v1/engines/davinci/completions
+    OpenAI->>Browser: Response
     Browser->>User: Display response for part 1
-    Browser->>Server: POST 2nd part to /api
-    Server->>OpenAI: POST /v1/engines/davinci/completions
-    OpenAI->>Server: Response
-    Server->>Browser: Response
+    Browser->>OpenAI: POST 2nd part to /v1/engines/davinci/completions
+    OpenAI->>Browser: Response
     Browser->>User: Display response for part 2
-    Browser->>Server: POST Nth part to /api
-    Server->>OpenAI: POST /v1/engines/davinci/completions
-    OpenAI->>Server: Response
-    Server->>Browser: Response
+    Browser->>OpenAI: POST Mth part to /v1/engines/davinci/completions
+    OpenAI->>Browser: Response
     Browser->>User: Display response for part N
 ```
 

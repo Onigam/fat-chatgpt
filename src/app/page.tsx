@@ -1,13 +1,15 @@
-import { CHUNK_SIZE } from "@/common/chunk.constant";
-import { splitString } from "@/common/chunk.helper";
-import callGPT from "@/common/openai";
-import styles from "@/styles/Home.module.css";
+'use client';
+
+import { CHUNK_SIZE } from "@/app/common/chunk.constant";
+import { splitString } from "@/app/common/chunk.helper";
+import callGPT from "@/app/common/openai";
+import styles from "@/app/styles/Home.module.css";
 import { Analytics } from '@vercel/analytics/react';
 import Head from "next/head";
 import { Configuration, OpenAIApi } from "openai";
 import { useEffect, useState } from "react";
-import sequence from "../common/sequence";
-import Typewriter from "../components/TypeWriter";
+import sequence from "./common/sequence";
+import Typewriter from "./components/TypeWriter";
 
 export default function Home() {
   const [requestInput, setRequestInput] = useState("Summarize the text below");

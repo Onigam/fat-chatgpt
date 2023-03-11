@@ -1,5 +1,6 @@
-import styles from "@/styles/Home.module.css";
+
 import { useEffect, useState } from "react";
+import styles from '../styles/Home.module.css';
 
 const Typewriter = ({ text }) => {
     const [currentText, setCurrentText] = useState("");

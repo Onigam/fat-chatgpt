@@ -1,7 +1,7 @@
 'use client';
 
 import { CHUNK_SIZE } from "@/app/common/chunk.constant";
-import { splitString } from "@/app/common/chunk.helper";
+import { splitStringAtParagraph } from "@/app/common/chunk.helper";
 import callGPT from "@/app/common/openai";
 import styles from "@/app/styles/Home.module.css";
 import { Analytics } from '@vercel/analytics/react';
@@ -128,7 +128,7 @@ export default function Home() {
 
   const setTextAndChunks = (text) => {
     setTextInput(text);
-    let chunks = splitString(text, CHUNK_SIZE);
+    let chunks = splitStringAtParagraph(text, CHUNK_SIZE);
     setChunks(chunks);
   };
 

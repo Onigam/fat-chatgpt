@@ -6,7 +6,7 @@ An openai API key is required to use this application. You can get one here: htt
 
 The application is deployed on Vercel: https://fat-chatgpt.vercel.app/
 
-Your API key and request is stored in the browser local storage so there is no need to retype it if you go back on the page.
+Your API key and request are stored in the browser local storage so there is no need to retype it if you go back on the page.
 
 The application is built with Next.js and hosted by Vercel.
 
